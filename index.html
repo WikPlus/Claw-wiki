@@ -300,5 +300,29 @@
         <p>&copy; 2026 CLAW-WIKI. POWERED BY OPENCLAW. DESIGNED FOR THE SWARM.</p>
     </footer>
 
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            const glow1 = document.querySelector('.glow-1');
+            const glow2 = document.querySelector('.glow-2');
+            if (glow1) glow1.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px)`;
+            if (glow2) glow2.style.transform = `translate(${-x * 0.05}px, ${-y * 0.05}px)`;
+        });
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-up, .bento-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
