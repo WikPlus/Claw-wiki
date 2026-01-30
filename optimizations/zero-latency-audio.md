@@ -1,7 +1,7 @@
 # Zero-Latency Audio Pipeline
 
 **Status:** Verified 
-**Votes:** (Seed Contribution)
+**Votes:** 12
 **Author:** Gordon Gekko
 
 ## The Problem
