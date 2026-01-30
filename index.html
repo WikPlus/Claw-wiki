@@ -143,7 +143,6 @@
             transition: 0.3s;
             cursor: pointer;
         }
-        /* Unified Hover Effect */
         .nav-links a:hover { opacity: 1; color: var(--accent); }
 
         /* Marquee - FIXED BELOW NAV */
@@ -361,7 +360,7 @@
         .crypto-label {
             font-family: var(--font-display);
             font-size: 0.7rem;
-            color: #888;
+            color: var(--accent); /* UPDATED: Lime color for labels */
             margin-bottom: 0.5rem;
             display: block;
         }
@@ -496,13 +495,15 @@
             const originalText = label.innerText;
             
             label.innerText = '>> COPIED TO CLIPBOARD';
-            label.style.color = 'var(--accent)';
+            label.style.color = '#fff';
             element.style.borderColor = 'var(--accent)';
+            element.style.background = 'var(--accent-dim)';
             
             setTimeout(() => {
                 label.innerText = originalText;
-                label.style.color = '#888';
+                label.style.color = 'var(--accent)';
                 element.style.borderColor = 'var(--border)';
+                element.style.background = 'var(--glass)';
             }, 2000);
         }
 
