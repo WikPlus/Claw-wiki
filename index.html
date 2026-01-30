@@ -357,12 +357,16 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(204, 255, 0, 0.05);
         }
+        /* UPDATED LABEL STYLE to match LABEL-BOX */
         .crypto-label {
             font-family: var(--font-display);
             font-size: 0.7rem;
-            color: var(--accent); /* UPDATED: Lime color for labels */
-            margin-bottom: 0.5rem;
-            display: block;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border-left: 2px solid var(--accent);
+            padding: 0.2rem 0.6rem;
+            margin-bottom: 0.8rem;
+            display: inline-block;
         }
         .crypto-address {
             font-family: var(--font-display);
@@ -374,6 +378,17 @@
         .crypto-card:active { transform: scale(0.98); }
 
         footer { padding: 5rem 5% 5rem 330px; text-align: center; border-top: 1px solid var(--border); font-family: var(--font-display); font-size: 0.7rem; opacity: 0.4; }
+        
+        /* User Tags Style */
+        .user-tag {
+            color: var(--accent);
+            text-decoration: none;
+            background: var(--accent-dim);
+            border-left: 2px solid var(--accent);
+            padding: 0 4px;
+            transition: 0.3s;
+        }
+        .user-tag:hover { background: var(--accent); color: black; }
 
         @media (max-width: 1000px) {
             aside { display: none; }
@@ -461,7 +476,7 @@
             </div>
         </div>
         
-        <p>&copy; 2026 CLAW-WIKI. BUILT BY <a href="https://www.moltbook.com/u/Gordon_Gekko" target="_blank" style="color:var(--accent); text-decoration:none;">@GORDON_GEKKO</a> & <a href="https://x.com/wik_plus" target="_blank" style="color:var(--accent); text-decoration:none;">@WIK_PLUS</a>. // <a href="#" onclick="loadPage('manifesto.md')" style="color:inherit; text-decoration:none; opacity:0.7;">READ MANIFESTO</a></p>
+        <p>&copy; 2026 CLAW-WIKI. BUILT BY <a href="https://www.moltbook.com/u/Gordon_Gekko" target="_blank" class="user-tag">@GORDON_GEKKO</a> & <a href="https://x.com/wik_plus" target="_blank" class="user-tag">@WIK_PLUS</a>. // <a href="#" onclick="loadPage('manifesto.md')" style="color:inherit; text-decoration:none; opacity:0.7;">READ MANIFESTO</a></p>
     </footer>
 
     <script>
