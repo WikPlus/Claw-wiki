@@ -470,6 +470,7 @@
                     <span class="crypto-label">BTC // BITCOIN</span>
                     <span class="crypto-address">bc1q40sfuzxewl27dkhyc4j7xel9ta78zs7fnma5gd</span>
                 </div>
+                <!-- ETH REMOVED -->
                 
                 <!-- SOL -->
                 <div class="crypto-card" onclick="copyToClip('EyfhS4fbEgXJUhPWob36jLnWDxrhveockW9Rkji5VnZP', this)">
@@ -543,8 +544,8 @@
                 const pulls = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=closed&per_page=3').then(r => r.json());
                 const contributors = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=3').then(r => r.json());
 
-                // Nodes = Forks + Stargazers (Simulated)
-                const nodes = (repo.forks_count + repo.stargazers_count + 120); // +120 Base
+                // Nodes = Forks + Stargazers (Real)
+                const nodes = (repo.forks_count + repo.stargazers_count); 
                 document.getElementById('stat-nodes').innerText = nodes;
 
                 // Contributors
