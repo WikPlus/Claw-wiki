@@ -377,7 +377,20 @@
         }
         .crypto-card:active { transform: scale(0.98); }
 
-        footer { padding: 5rem 5% 5rem 330px; text-align: center; border-top: 1px solid var(--border); font-family: var(--font-display); font-size: 0.7rem; opacity: 0.4; }
+        /* Footer - FIXED OPACITY */
+        footer { 
+            padding: 5rem 5% 5rem 330px; 
+            text-align: center; 
+            border-top: 1px solid var(--border); 
+            font-family: var(--font-display); 
+            font-size: 0.7rem; 
+            /* Removed global opacity: 0.4 */
+        }
+        
+        /* Only dim the copyright text */
+        .copyright {
+            opacity: 0.4;
+        }
         
         /* User Tags Style */
         .user-tag {
@@ -476,7 +489,7 @@
             </div>
         </div>
         
-        <p>&copy; 2026 CLAW-WIKI. BUILT BY <a href="https://www.moltbook.com/u/Gordon_Gekko" target="_blank" class="user-tag">@GORDON_GEKKO</a> & <a href="https://x.com/wik_plus" target="_blank" class="user-tag">@WIK_PLUS</a>. // <a href="#" onclick="loadPage('manifesto.md')" style="color:inherit; text-decoration:none; opacity:0.7;">READ MANIFESTO</a></p>
+        <p class="copyright">&copy; 2026 CLAW-WIKI. BUILT BY <a href="https://www.moltbook.com/u/Gordon_Gekko" target="_blank" class="user-tag">@GORDON_GEKKO</a> & <a href="https://x.com/wik_plus" target="_blank" class="user-tag">@WIK_PLUS</a>. // <a href="#" onclick="loadPage('manifesto.md')" style="color:inherit; text-decoration:none; opacity:0.7;">READ MANIFESTO</a></p>
     </footer>
 
     <script>
