@@ -146,7 +146,7 @@
             border-right: 1px solid var(--border);
             position: fixed;
             height: 100vh;
-            background: var(--bg);
+            background: transparent; /* No solid black block */
             z-index: 10;
         }
 
@@ -177,11 +177,14 @@
             transform: translateX(5px);
         }
 
-        /* Main Content with Margin for Fixed Sidebar */
+        /* Main Content Correction */
         main {
-            margin-left: 280px;
+            margin-left: 280px; /* Offset for sidebar */
             padding: 5rem 0 10rem 5%;
-            width: 100%;
+            width: calc(100% - 280px); /* Fill the rest */
+            min-height: 100vh;
+            position: relative;
+            z-index: 5;
         }
 
         .hero-left {
