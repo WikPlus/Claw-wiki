@@ -301,7 +301,12 @@
             max-width: 600px;
         }
 
-        .knowledge-section { margin-top: 5rem; }
+        /* SCROLL MARGIN FIX */
+        .knowledge-section { 
+            margin-top: 5rem;
+            scroll-margin-top: 140px; /* Nav (75) + Marquee (45) + Buffer (20) */
+        }
+        
         .section-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
@@ -470,7 +475,6 @@
                     <span class="crypto-label">BTC // BITCOIN</span>
                     <span class="crypto-address">bc1q40sfuzxewl27dkhyc4j7xel9ta78zs7fnma5gd</span>
                 </div>
-                <!-- ETH REMOVED -->
                 
                 <!-- SOL -->
                 <div class="crypto-card" onclick="copyToClip('EyfhS4fbEgXJUhPWob36jLnWDxrhveockW9Rkji5VnZP', this)">
