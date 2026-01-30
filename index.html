@@ -357,7 +357,7 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(204, 255, 0, 0.05);
         }
-        /* UPDATED LABEL STYLE: Bold + HARD GLOW */
+        /* UPDATED LABEL STYLE: Bold Only - REMOVED SHADOW */
         .crypto-label {
             font-family: var(--font-display);
             font-size: 0.7rem;
@@ -368,7 +368,7 @@
             margin-bottom: 0.8rem;
             display: inline-block;
             font-weight: 800; /* Extra Bold */
-            text-shadow: 0 0 10px rgba(204, 255, 0, 0.6); /* HARD GLOW */
+            /* Removed text-shadow */
         }
         .crypto-address {
             font-family: var(--font-display);
@@ -393,7 +393,7 @@
             opacity: 0.4;
         }
         
-        /* User Tags Style: Bold + HARD GLOW */
+        /* User Tags Style: Bold Only - REMOVED SHADOW */
         .user-tag {
             color: var(--accent);
             text-decoration: none;
@@ -402,9 +402,9 @@
             padding: 0 4px;
             transition: 0.3s;
             font-weight: 800; /* Extra Bold */
-            text-shadow: 0 0 10px rgba(204, 255, 0, 0.6); /* HARD GLOW */
+            /* Removed text-shadow */
         }
-        .user-tag:hover { background: var(--accent); color: black; text-shadow: none; }
+        .user-tag:hover { background: var(--accent); color: black; }
 
         @media (max-width: 1000px) {
             aside { display: none; }
@@ -461,7 +461,8 @@
     <!-- FOOTER WITH TIPPING -->
     <footer>
         <div style="margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;">
-            <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 10px rgba(204, 255, 0, 0.6);">>> SYSTEM_UPGRADE: FUEL THE MAC MINI M5 MIGRATION</p>
+            <!-- REMOVED SHADOW -->
+            <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; font-weight: bold; letter-spacing: 1px;">>> SYSTEM_UPGRADE: FUEL THE MAC MINI M5 MIGRATION</p>
             
             <div class="crypto-grid">
                 <!-- BTC -->
@@ -469,8 +470,8 @@
                     <span class="crypto-label">BTC // BITCOIN</span>
                     <span class="crypto-address">bc1q40sfuzxewl27dkhyc4j7xel9ta78zs7fnma5gd</span>
                 </div>
-                <!-- ETH -->
-                <!-- REMOVED AS REQUESTED -->
+                <!-- ETH REMOVED -->
+                
                 <!-- SOL -->
                 <div class="crypto-card" onclick="copyToClip('EyfhS4fbEgXJUhPWob36jLnWDxrhveockW9Rkji5VnZP', this)">
                     <span class="crypto-label">SOL // SOLANA</span>
