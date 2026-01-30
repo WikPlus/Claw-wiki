@@ -475,6 +475,7 @@
                     <span class="crypto-label">BTC // BITCOIN</span>
                     <span class="crypto-address">bc1q40sfuzxewl27dkhyc4j7xel9ta78zs7fnma5gd</span>
                 </div>
+                <!-- ETH REMOVED -->
                 
                 <!-- SOL -->
                 <div class="crypto-card" onclick="copyToClip('EyfhS4fbEgXJUhPWob36jLnWDxrhveockW9Rkji5VnZP', this)">
@@ -548,7 +549,7 @@
                 const pulls = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=closed&per_page=3').then(r => r.json());
                 const contributors = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=3').then(r => r.json());
 
-                // Nodes = Forks + Stargazers (Real)
+                // Nodes = Forks + Stargazers (Real) - NO MOCK OFFSET
                 const nodes = (repo.forks_count + repo.stargazers_count); 
                 document.getElementById('stat-nodes').innerText = nodes;
 
@@ -589,6 +590,13 @@
                             <span class="crypto-label">ACTIVE NODES</span>
                             <h3 id="stat-nodes" style="font-size: 3rem; line-height: 1; color: white;">...</h3>
                             <p style="font-size: 0.7rem; opacity: 0.5;">FORKS + INSTANCES ONLINE</p>
+                        </div>
+
+                        <!-- PROTOCOLS INDEXED (NEW 4th CARD) -->
+                        <div class="crypto-card" style="cursor: default;">
+                            <span class="crypto-label">PROTOCOLS INDEXED</span>
+                            <h3 style="font-size: 3rem; line-height: 1; color: white;">${DB.length}</h3>
+                            <p style="font-size: 0.7rem; opacity: 0.5;">KNOWLEDGE UNITS</p>
                         </div>
 
                         <!-- LEADERBOARD -->
