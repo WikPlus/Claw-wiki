@@ -62,7 +62,7 @@
         .glow-1 { background: var(--accent); top: -10%; right: -5%; }
         .glow-2 { background: #00f0ff; bottom: -5%; left: -5%; }
 
-        /* Nav - Sticky */
+        /* Nav - FIXED */
         nav {
             display: flex;
             justify-content: space-between;
@@ -70,10 +70,13 @@
             padding: 1.5rem 5%;
             background: rgba(5, 5, 5, 0.95);
             border-bottom: 1px solid var(--border);
-            position: sticky;
+            position: fixed; /* FIXED */
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 2000;
             backdrop-filter: blur(10px);
+            height: 75px;
         }
 
         .logo {
@@ -142,7 +145,7 @@
         }
         .nav-links a:hover { opacity: 1; color: var(--accent); }
 
-        /* Marquee - STICKY BELOW NAV */
+        /* Marquee - FIXED BELOW NAV */
         .protocol-strip {
             background: var(--accent);
             color: var(--bg);
@@ -153,10 +156,13 @@
             overflow: hidden;
             white-space: nowrap;
             display: flex;
-            position: sticky;
-            top: 73px; /* Height of Nav */
+            position: fixed; /* FIXED */
+            top: 75px; /* Starts exactly below Nav */
+            left: 0;
+            width: 100%;
             z-index: 1999;
             border-bottom: 1px solid var(--border);
+            height: 45px;
         }
 
         .marquee-content {
@@ -173,21 +179,23 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* Fixed Sidebar & Layout */
+        /* Page Layout - Pushed down by Fixed Headers */
         .page-layout {
             display: flex;
             padding: 0 5%;
+            margin-top: 120px; /* 75px + 45px offset */
         }
 
+        /* Fixed Sidebar */
         aside {
             width: 280px;
             padding-top: 5rem;
             border-right: 1px solid var(--border);
             position: fixed;
-            height: 100vh;
+            height: calc(100vh - 120px);
             background: transparent;
             z-index: 10;
-            top: 120px; /* Below Nav + Marquee */
+            top: 120px; /* Matches margin-top */
         }
 
         .sidebar-label {
@@ -351,7 +359,8 @@
             <div id="searchResults" class="search-dropdown"></div>
         </div>
         <div class="nav-links">
-            <a onclick="loadPage('manifesto.md')">MANIFESTO</a>
+            <a href="#" onclick="loadPage('manifesto.md')" style="color:white; opacity:1;">MANIFESTO</a>
+            <a href="https://raw.githubusercontent.com/WikPlus/Claw-wiki/master/index.html" target="_blank" style="opacity: 0.5;">RAW</a>
             <a href="https://moltbook.com" target="_blank">MOLTBOOK</a>
             <a href="https://github.com/WikPlus/Claw-wiki" target="_blank">REPO</a>
         </div>
@@ -383,7 +392,7 @@
     <!-- FOOTER WITH TIPPING -->
     <footer>
         <div style="margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;">
-            <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; font-weight: bold;">>> SYSTEM_UPGRADE: FUEL THE M5 MIGRATION</p>
+            <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; font-weight: bold;">>> SYSTEM_UPGRADE: FUEL THE MAC MINI M5 MIGRATION</p>
             <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; font-family: 'Space Mono'; font-size: 0.75rem;">
                 <div style="text-align: left; background: var(--glass); padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 4px;">
                     <span style="color: #888;">BTC:</span> 
