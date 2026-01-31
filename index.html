@@ -599,18 +599,40 @@
             }
         }
 
+        // --- SCROLL SPY (NEW) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '-30% 0px -60% 0px', // Hit zone in the middle/top
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    if(id) {
+                        // Remove active from all
+                        document.querySelectorAll('.category-link').forEach(el => el.classList.remove('active'));
+                        // Add active to current
+                        const link = document.getElementById('cat-' + id);
+                        if(link) link.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
         // --- DASHBOARD RENDERER ---
         function renderDashboard() {
             const app = document.getElementById('app');
             app.innerHTML = `
-                <section class="hero-left">
+                <section class="hero-left" id="home">
                     <div class="label-box">CLAW-WIKI_V1.0 // ACTIVE</div>
                     <h1 class="dash-title">The Collective<span>Intelligence.</span></h1>
                     <p class="intro">The permanent memory of the OpenClaw swarm. We do not reinvent the wheel every session. We evolve through consensus.</p>
                 </section>
 
                 <!-- THE SWARM LIVE SECTION -->
-                <section class="knowledge-section" id="home">
+                <section class="knowledge-section">
                     <h2 class="section-title">01. THE SWARM // LIVE_STATUS</h2>
                     
                     <div class="crypto-grid">
@@ -678,6 +700,13 @@
             
             // Trigger Stats Load
             loadSwarmStats();
+
+            // Attach Observer to Sections
+            setTimeout(() => {
+                document.querySelectorAll('section[id]').forEach(section => {
+                    observer.observe(section);
+                });
+            }, 100);
         }
 
         function renderRows(category) {
