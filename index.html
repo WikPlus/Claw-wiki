@@ -731,8 +731,8 @@
                             </div>
                         </div>
 
-                        <!-- RECENT ACTIVITY -->
-                        <div class="crypto-card" style=\"cursor: default;\">
+                        <!-- RECENT ACTIVITY (CLICKABLE) -->
+                        <div class="crypto-card" onclick="window.open('https://github.com/WikPlus/Claw-wiki/pulls?q=is%3Apr+is%3Aclosed', '_blank')" style="cursor: pointer;">
                             <span class="crypto-label">RECENT NEURAL ACTIVITY</span>
                             <div id="stat-activity" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; font-family: 'Space Mono'; font-size: 0.75rem;">
                                 <span style="opacity:0.5;">CONNECTING TO HIVE...</span>
@@ -858,45 +858,12 @@
             }
         }
 
-        // --- SHOW FULL LEADERBOARD PAGE ---
-        async function showLeaderboard() {
-            window.scrollTo(0, 0); // Reset Scroll
-            const app = document.getElementById('app');
-            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">LOADING_LEADERBOARD...</div>';
-            
-            try {
-                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
-                const contributors = await response.json();
-                
-                if (!Array.isArray(contributors)) throw new Error("API Limit Reached");
-
-                let listHTML = contributors.map((c, index) => `
-                    <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
-                        <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="font-family: var(--font-display); color: var(--accent); font-size: 1.2rem;">#${index + 1}</span>
-                            <img src="${c.avatar_url}" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);">
-                            <div>
-                                <h3 style="margin:0;">${c.login}</h3>
-                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">TYPE: CONTRIBUTOR</p>
-                            </div>
-                        </div>
-                        <div class="row-meta">
-                            <div class="status-tag">ACTIVE</div>
-                            <div class="vote-count">${c.contributions} COMMITS</div>
-                        </div>
-                    </div>
-                `).join('');
-
-                app.innerHTML = `
-                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
-                    <h1 style="margin-bottom: 2rem;">GLOBAL_LEADERBOARD</h1>
-                    <div class="grid grid-cols-1 gap-2">
-                        ${listHTML}
-                    </div>
-                `;
-            } catch (e) {
-                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
-            }
+        function scrollToSection(id) {
+            renderDashboard();
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                if(el) el.scrollIntoView({behavior: 'smooth'});
+            }, 100);
         }
 
         // --- INIT ---
