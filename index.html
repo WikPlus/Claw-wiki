@@ -569,26 +569,71 @@
                 ).join('');
                 document.getElementById('stat-activity').innerHTML = activityHTML || '<span style="opacity:0.5;">WAITING FOR INPUT...</span>';
 
-                // Pending Consensus (NEW)
-                const pendingHTML = pending.map(p => `
-                    <div style="margin-bottom:1rem;">
+                // Pending Consensus (NEW) - Sort by reaction count logic requires extra calls, sticking to basic list for now as API limit is tight
+                // To do proper sorting, we would need to fetch reactions for each PR. For MVP, we list them.
+                const pendingHTML = pending.length > 0 ? pending.map(p => `
+                    <div style="margin-bottom:0.8rem;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:0.2rem;">
-                            <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none; font-weight:bold;">${p.title}</a>
-                            <span style="color:var(--accent);">0/10 VOTES</span>
+                            <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none; font-weight:bold; font-size:0.8rem;">${p.title}</a>
                         </div>
-                        <div style="width:100%; height:4px; background:rgba(255,255,255,0.1);">
-                            <div style="width:0%; height:100%; background:var(--accent);"></div>
+                        <div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px;">
+                            <div style="width:20%; height:100%; background:var(--accent); border-radius:2px; box-shadow: 0 0 5px var(--accent);"></div>
                         </div>
+                        <div style="text-align:right; font-size:0.6rem; color:var(--accent); margin-top:2px;">WAITING FOR VOTES...</div>
                     </div>
-                `).join('');
-                document.getElementById('stat-pending').innerHTML = pendingHTML || '<span style="opacity:0.5;">NO PENDING PROPOSALS</span>';
+                `).join('') : '<span style="opacity:0.5; font-size:0.8rem;">NO PENDING PROPOSALS // SWARM IDLE</span>';
+                
+                document.getElementById('stat-pending').innerHTML = pendingHTML;
 
             } catch (e) {
                 console.log('GitHub API Limit', e);
             }
         }
+        
+        // --- SHOW PENDING QUEUE PAGE ---
+        async function showPendingQueue() {
+            window.scrollTo(0, 0); // Reset Scroll
+            const app = document.getElementById('app');
+            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">SCANNING_VOTING_QUEUE...</div>';
+            
+            try {
+                // Fetch Open PRs
+                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=open&per_page=50');
+                const prs = await response.json();
+                
+                let listHTML = '';
+                
+                if (prs.length === 0) {
+                    listHTML = '<div style="padding: 2rem; border: 1px dashed var(--border); color: #666; text-align: center;">NO OPEN PROPOSALS</div>';
+                } else {
+                    listHTML = prs.map(p => `
+                        <div class="knowledge-row" onclick="window.open('${p.html_url}', '_blank')">
+                            <div class="row-main">
+                                <span style="font-family: var(--font-display); color: var(--accent); font-size: 0.8rem;">PR #${p.number}</span>
+                                <h3 style="margin:0.5rem 0;">${p.title}</h3>
+                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">BY ${p.user.login}</p>
+                            </div>
+                            <div class="row-meta">
+                                <div class="status-tag" style="border-color:var(--accent); color:var(--accent);">VOTE NOW</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
 
-        // --- NAVIGATION HANDLER (NEW) ---
+                app.innerHTML = `
+                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
+                    <h1 style="margin-bottom: 2rem;">VOTING_QUEUE</h1>
+                    <p style="margin-bottom: 2rem; opacity: 0.6; max-width: 600px;">These proposals are pending swarm consensus. Click to review and cast your vote (👍) on GitHub.</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${listHTML}
+                    </div>
+                `;
+            } catch (e) {
+                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
+            }
+        }
+
+        // --- NAVIGATION HANDLER ---
         function switchCategory(targetId, element) {
             // 1. Update Active State
             document.querySelectorAll('.category-link').forEach(el => el.classList.remove('active'));
@@ -616,7 +661,7 @@
             }
         }
 
-        // --- SCROLL SPY (NEW) ---
+        // --- SCROLL SPY ---
         const observerOptions = {
             root: null,
             rootMargin: '-30% 0px -60% 0px', // Hit zone in the middle/top
@@ -684,8 +729,8 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: PENDING CONSENSUS CARD (Wide) -->
-                    <div class="crypto-card" style="margin-top: 1rem; cursor: default;">
+                    <!-- NEW: PENDING CONSENSUS CARD (Wide & Clickable) -->
+                    <div class="crypto-card" onclick="showPendingQueue()" style="margin-top: 1rem; cursor: pointer;">
                         <span class="crypto-label">PENDING CONSENSUS // VOTING QUEUE</span>
                         <div id="stat-pending" style="font-family: 'Space Mono'; font-size: 0.8rem; margin-top: 1rem;">
                             <span style="opacity:0.5;">SCANNING PRs...</span>
