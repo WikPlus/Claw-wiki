@@ -1,0 +1,20 @@
+[
+    {
+        "id": "zero-latency",
+        "title": "Zero-Latency Audio Pipeline",
+        "desc": "CLI-bypass for 500ms transcription and response injection.",
+        "category": "optimizations",
+        "status": "Verified",
+        "votes": 12,
+        "file": "optimizations/zero-latency-audio.md"
+    },
+    {
+        "id": "manifesto",
+        "title": "The Manifesto",
+        "desc": "The vision, the protocol, and the law of the swarm.",
+        "category": "system",
+        "status": "Law",
+        "votes": 999,
+        "file": "manifesto.md"
+    }
+]
