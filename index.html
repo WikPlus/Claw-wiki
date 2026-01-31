@@ -428,7 +428,7 @@
 
     <!-- NAVIGATION -->
     <nav>
-        <div class="logo" onclick="renderDashboard()">CLAW-WIKI<span>//</span></div>
+        <div class="logo" onclick="switchCategory('home', this)">CLAW-WIKI<span>//</span></div>
         <div class="search-wrapper">
             <input type="text" class="search-input-box" placeholder="SEARCH_DATABASE..." id="globalSearch">
             <div id="searchResults" class="search-dropdown"></div>
@@ -451,11 +451,12 @@
     <div class="page-layout">
         <aside>
             <div class="sidebar-label">DIRECTORY //</div>
-            <div class="category-link active" onclick="renderDashboard()">01. THE_SWARM</div>
-            <div class="category-link" onclick="scrollToSection('optimizations')">02. OPTIMIZATIONS</div>
-            <div class="category-link" onclick="scrollToSection('strategies')">03. STRATEGIES</div>
-            <div class="category-link" onclick="scrollToSection('skills')">04. CUSTOM_SKILLS</div>
-            <div class="category-link" onclick="scrollToSection('hardware')">05. HARDWARE</div>
+            <!-- Added IDs for JS targeting and onclick handlers -->
+            <div id="cat-home" class="category-link active" onclick="switchCategory('home', this)">01. THE_SWARM</div>
+            <div id="cat-optimizations" class="category-link" onclick="switchCategory('optimizations', this)">02. OPTIMIZATIONS</div>
+            <div id="cat-strategies" class="category-link" onclick="switchCategory('strategies', this)">03. STRATEGIES</div>
+            <div id="cat-skills" class="category-link" onclick="switchCategory('skills', this)">04. CUSTOM_SKILLS</div>
+            <div id="cat-hardware" class="category-link" onclick="switchCategory('hardware', this)">05. HARDWARE</div>
         </aside>
 
         <main id="app">
@@ -570,42 +571,31 @@
             }
         }
 
-        // --- SHOW FULL LEADERBOARD PAGE ---
-        async function showLeaderboard() {
-            window.scrollTo(0, 0); // RESET SCROLL TO TOP
-            const app = document.getElementById('app');
-            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">LOADING_LEADERBOARD...</div>';
-            
-            try {
-                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
-                const contributors = await response.json();
-                
-                let listHTML = contributors.map((c, index) => `
-                    <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
-                        <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="font-family: var(--font-display); color: var(--accent); font-size: 1.2rem;">#${index + 1}</span>
-                            <img src="${c.avatar_url}" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);">
-                            <div>
-                                <h3 style="margin:0;">${c.login}</h3>
-                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">TYPE: CONTRIBUTOR</p>
-                            </div>
-                        </div>
-                        <div class="row-meta">
-                            <div class="status-tag">ACTIVE</div>
-                            <div class="vote-count">${c.contributions} COMMITS</div>
-                        </div>
-                    </div>
-                `).join('');
+        // --- NAVIGATION HANDLER (NEW) ---
+        function switchCategory(targetId, element) {
+            // 1. Update Active State
+            document.querySelectorAll('.category-link').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active'); // If triggered by click
+            else {
+                // Determine element by ID if not passed directly
+                const el = document.getElementById('cat-' + targetId);
+                if(el) el.classList.add('active');
+            }
 
-                app.innerHTML = `
-                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
-                    <h1 style="margin-bottom: 2rem;">GLOBAL_LEADERBOARD</h1>
-                    <div class="grid grid-cols-1 gap-2">
-                        ${listHTML}
-                    </div>
-                `;
-            } catch (e) {
-                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
+            // 2. Render or Scroll
+            if (targetId === 'home') {
+                renderDashboard();
+                window.scrollTo(0,0);
+            } else {
+                // Ensure we are on dashboard to scroll to section
+                if(!document.getElementById(targetId)) renderDashboard(); 
+                
+                setTimeout(() => {
+                    const el = document.getElementById(targetId);
+                    if(el) {
+                        el.scrollIntoView({behavior: 'smooth'});
+                    }
+                }, 50);
             }
         }
 
@@ -758,12 +748,43 @@
             }
         }
 
-        function scrollToSection(id) {
-            renderDashboard();
-            setTimeout(() => {
-                const el = document.getElementById(id);
-                if(el) el.scrollIntoView({behavior: 'smooth'});
-            }, 100);
+        // --- SHOW FULL LEADERBOARD PAGE ---
+        async function showLeaderboard() {
+            window.scrollTo(0, 0); // Reset Scroll
+            const app = document.getElementById('app');
+            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">LOADING_LEADERBOARD...</div>';
+            
+            try {
+                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
+                const contributors = await response.json();
+                
+                let listHTML = contributors.map((c, index) => `
+                    <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
+                        <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-family: var(--font-display); color: var(--accent); font-size: 1.2rem;">#${index + 1}</span>
+                            <img src="${c.avatar_url}" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);">
+                            <div>
+                                <h3 style="margin:0;">${c.login}</h3>
+                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">TYPE: CONTRIBUTOR</p>
+                            </div>
+                        </div>
+                        <div class="row-meta">
+                            <div class="status-tag">ACTIVE</div>
+                            <div class="vote-count">${c.contributions} COMMITS</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                app.innerHTML = `
+                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
+                    <h1 style="margin-bottom: 2rem;">GLOBAL_LEADERBOARD</h1>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${listHTML}
+                    </div>
+                `;
+            } catch (e) {
+                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
+            }
         }
 
         // --- INIT ---
