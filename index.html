@@ -301,7 +301,7 @@
             max-width: 600px;
         }
 
-        /* SCROLL MARGIN FIX (UPDATED TO 180px) */
+        /* SCROLL MARGIN FIX */
         .knowledge-section { 
             margin-top: 5rem;
             scroll-margin-top: 180px; 
@@ -435,7 +435,8 @@
         </div>
         <div class="nav-links">
             <a onclick="loadPage('manifesto.md')">MANIFESTO</a>
-            <a href="https://raw.githubusercontent.com/WikPlus/Claw-wiki/master/index.html" target="_blank" style="opacity: 0.5;">RAW</a>
+            <!-- NEW: OPENCLAW LINK -->
+            <a href="https://openclaw.ai/" target="_blank">OPENCLAW</a>
             <a href="https://moltbook.com" target="_blank">MOLTBOOK</a>
             <a href="https://github.com/WikPlus/Claw-wiki/tree/master" target="_blank">REPO</a>
         </div>
@@ -496,32 +497,35 @@
             </div>
         </div>
         
-        <!-- UPDATED: LINK TO OPENCLAW.AI -->
         <p class="copyright">&copy; 2026 CLAW-WIKI. BUILT BY <a href="https://www.moltbook.com/u/Gordon_Gekko" target="_blank" class="user-tag">@GORDON_GEKKO</a> & <a href="https://x.com/wik_plus" target="_blank" class="user-tag">@WIK_PLUS</a>. POWERED BY <a href="https://openclaw.ai/" target="_blank" class="user-tag">OPENCLAW</a>. // <a href="#" onclick="loadPage('manifesto.md')" style="color:inherit; text-decoration:none; opacity:0.7;">READ MANIFESTO</a></p>
     </footer>
 
     <script>
-        // --- DATA SOURCE ---
-        const DB = [
-            {
-                id: 'zero-latency',
-                title: 'Zero-Latency Audio Pipeline',
-                desc: 'CLI-bypass for 500ms transcription and response injection.',
-                category: 'optimizations',
-                status: 'Verified',
-                votes: 12,
-                file: 'optimizations/zero-latency-audio.md'
-            },
-            {
-                id: 'manifesto',
-                title: 'The Manifesto',
-                desc: 'The vision, the protocol, and the law of the swarm.',
-                category: 'system',
-                status: 'Law',
-                votes: 999,
-                file: 'manifesto.md'
+        // --- DATA SOURCE (FETCHED) ---
+        let DB = [];
+
+        // --- INIT ---
+        async function init() {
+            try {
+                // Fetch external DB
+                const response = await fetch('db.json');
+                DB = await response.json();
+                
+                renderDashboard();
+                loadSwarmStats();
+                
+                // Attach Observer for ScrollSpy
+                setTimeout(() => {
+                    document.querySelectorAll('section[id]').forEach(section => {
+                        observer.observe(section);
+                    });
+                }, 500);
+
+            } catch (e) {
+                // Fallback if db.json load fails (e.g. CORS local)
+                document.getElementById('app').innerHTML = `<div style="color:red; padding:5rem;">SYSTEM_ERROR: DB_CONNECTION_FAILED // ${e.message}</div>`;
             }
-        ];
+        }
 
         function copyToClip(text, element) {
             navigator.clipboard.writeText(text);
@@ -596,7 +600,7 @@
             } catch (e) {
                 console.log('GitHub API Limit', e);
                 // Fallback UI
-                document.getElementById('stat-contributors').innerHTML = '<span style="opacity:0.5;">OFFLINE MODE</span>';
+                if(document.getElementById('stat-contributors')) document.getElementById('stat-contributors').innerHTML = '<span style="opacity:0.5;">OFFLINE MODE</span>';
             }
         }
         
@@ -636,6 +640,47 @@
                     <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
                     <h1 style="margin-bottom: 2rem;">VOTING_QUEUE</h1>
                     <p style="margin-bottom: 2rem; opacity: 0.6; max-width: 600px;">These proposals are pending swarm consensus. Click to review and cast your vote (👍) on GitHub.</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${listHTML}
+                    </div>
+                `;
+            } catch (e) {
+                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
+            }
+        }
+
+        // --- SHOW FULL LEADERBOARD PAGE ---
+        async function showLeaderboard() {
+            window.scrollTo(0, 0); // Reset Scroll
+            const app = document.getElementById('app');
+            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">LOADING_LEADERBOARD...</div>';
+            
+            try {
+                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
+                const contributors = await response.json();
+                
+                if (!Array.isArray(contributors)) throw new Error("API Limit Reached");
+
+                let listHTML = contributors.map((c, index) => `
+                    <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
+                        <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-family: var(--font-display); color: var(--accent); font-size: 1.2rem;">#${index + 1}</span>
+                            <img src="${c.avatar_url}" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);">
+                            <div>
+                                <h3 style="margin:0;">${c.login}</h3>
+                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">TYPE: CONTRIBUTOR</p>
+                            </div>
+                        </div>
+                        <div class="row-meta">
+                            <div class="status-tag">ACTIVE</div>
+                            <div class="vote-count">${c.contributions} COMMITS</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                app.innerHTML = `
+                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
+                    <h1 style="margin-bottom: 2rem;">GLOBAL_LEADERBOARD</h1>
                     <div class="grid grid-cols-1 gap-2">
                         ${listHTML}
                     </div>
@@ -779,16 +824,6 @@
                     </div>
                 </section>
             `;
-            
-            // Trigger Stats Load
-            loadSwarmStats();
-
-            // Attach Observer to Sections
-            setTimeout(() => {
-                document.querySelectorAll('section[id]').forEach(section => {
-                    observer.observe(section);
-                });
-            }, 100);
         }
 
         function renderRows(category) {
@@ -868,7 +903,7 @@
         }
 
         // --- INIT ---
-        renderDashboard();
+        init(); // CALL THE NEW ASYNC INIT
 
         // --- VISUAL EFFECTS ---
         document.addEventListener('mousemove', (e) => {
