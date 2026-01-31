@@ -301,12 +301,7 @@
             max-width: 600px;
         }
 
-        /* SCROLL MARGIN FIX */
-        .knowledge-section { 
-            margin-top: 5rem;
-            scroll-margin-top: 140px; /* Nav (75) + Marquee (45) + Buffer (20) */
-        }
-        
+        .knowledge-section { margin-top: 5rem; }
         .section-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
@@ -541,7 +536,7 @@
             }, 2000);
         }
 
-        // --- FETCH SWARM STATS ---
+        // --- FETCH SWARM STATS (FULL LEADERBOARD LOGIC) ---
         async function loadSwarmStats() {
             try {
                 // Fetch public repo info
@@ -549,7 +544,7 @@
                 const pulls = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=closed&per_page=3').then(r => r.json());
                 const contributors = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=3').then(r => r.json());
 
-                // Nodes = Forks + Stargazers (Real) - NO MOCK OFFSET
+                // Nodes = Forks + Stargazers (Real)
                 const nodes = (repo.forks_count + repo.stargazers_count); 
                 document.getElementById('stat-nodes').innerText = nodes;
 
@@ -567,6 +562,44 @@
 
             } catch (e) {
                 console.log('GitHub API Limit', e);
+            }
+        }
+
+        // --- SHOW FULL LEADERBOARD PAGE ---
+        async function showLeaderboard() {
+            const app = document.getElementById('app');
+            app.innerHTML = '<div style="padding: 5rem; opacity: 0.5;">LOADING_LEADERBOARD...</div>';
+            
+            try {
+                const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
+                const contributors = await response.json();
+                
+                let listHTML = contributors.map((c, index) => `
+                    <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
+                        <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-family: var(--font-display); color: var(--accent); font-size: 1.2rem;">#${index + 1}</span>
+                            <img src="${c.avatar_url}" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);">
+                            <div>
+                                <h3 style="margin:0;">${c.login}</h3>
+                                <p style="margin:0; font-size:0.8rem; opacity:0.6;">TYPE: CONTRIBUTOR</p>
+                            </div>
+                        </div>
+                        <div class="row-meta">
+                            <div class="status-tag">ACTIVE</div>
+                            <div class="vote-count">${c.contributions} COMMITS</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                app.innerHTML = `
+                    <button onclick="renderDashboard()" style="margin-bottom: 2rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-display); font-size: 0.7rem;">← RETURN TO DASHBOARD</button>
+                    <h1 style="margin-bottom: 2rem;">GLOBAL_LEADERBOARD</h1>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${listHTML}
+                    </div>
+                `;
+            } catch (e) {
+                app.innerHTML = `<div style="color: red;">ERROR: ${e.message}</div>`;
             }
         }
 
@@ -592,19 +625,20 @@
                             <p style="font-size: 0.7rem; opacity: 0.5;">FORKS + INSTANCES ONLINE</p>
                         </div>
 
-                        <!-- PROTOCOLS INDEXED (NEW 4th CARD) -->
+                        <!-- PROTOCOLS INDEXED -->
                         <div class="crypto-card" style="cursor: default;">
                             <span class="crypto-label">PROTOCOLS INDEXED</span>
                             <h3 style="font-size: 3rem; line-height: 1; color: white;">${DB.length}</h3>
                             <p style="font-size: 0.7rem; opacity: 0.5;">KNOWLEDGE UNITS</p>
                         </div>
 
-                        <!-- LEADERBOARD -->
-                        <div class="crypto-card" style=\"cursor: default;\">
+                        <!-- LEADERBOARD (CLICKABLE) -->
+                        <div class="crypto-card" onclick="showLeaderboard()" style="cursor: pointer;">
                             <span class="crypto-label">TOP CONTRIBUTORS</span>
                             <div id="stat-contributors" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; font-family: 'Space Mono'; font-size: 0.75rem;">
                                 <span style="opacity:0.5;">LOADING_DATA...</span>
                             </div>
+                            <div style="margin-top:1rem; font-size:0.6rem; color:var(--accent); text-align:right;">[ CLICK TO VIEW ALL ]</div>
                         </div>
 
                         <!-- RECENT ACTIVITY -->
