@@ -229,7 +229,7 @@
         /* Main Content */
         main {
             margin-left: 280px;
-            padding: 5rem 0 2rem 5%; /* Reduced bottom padding to 2rem */
+            padding: 5rem 0 2rem 5%; /* Reduced to 2rem */
             width: calc(100% - 280px);
             min-height: 100vh;
             position: relative;
@@ -277,12 +277,16 @@
             flex: 1;
         }
         
-        /* Mascot Styling */
+        /* Mascot Styling - DOUBLE SIZE, ADJUSTED POS */
         .mascot-img {
-            width: 180px;
+            width: 360px; /* Doubled from 180px */
             height: auto;
             filter: drop-shadow(0 0 20px rgba(204, 255, 0, 0.2)); /* Subtle Lime Glow */
             animation: float 6s ease-in-out infinite;
+            margin-top: -60px; /* Moved Up */
+            margin-left: -40px; /* Moved Left (closer to text) */
+            position: relative;
+            z-index: 2;
         }
 
         @keyframes float {
@@ -440,7 +444,7 @@
             footer { padding-left: 5%; }
             .search-input-box { width: 150px; }
             .hero-container { flex-direction: column-reverse; text-align: center; }
-            .mascot-img { width: 120px; margin-bottom: 2rem; }
+            .mascot-img { width: 180px; margin-bottom: 2rem; margin-top:0; margin-left:0; } /* Mobile adjustments */
         }
     </style>
 </head>
