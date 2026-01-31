@@ -549,6 +549,9 @@
                 const repo = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki').then(r => r.json());
                 const pulls = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=closed&per_page=3').then(r => r.json());
                 const contributors = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=3').then(r => r.json());
+                
+                // NEW: FETCH PENDING (OPEN) PRs
+                const pending = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=open&per_page=3').then(r => r.json());
 
                 // Nodes = Forks + Stargazers (Real) - NO MOCK OFFSET
                 const nodes = (repo.forks_count + repo.stargazers_count); 
@@ -565,6 +568,20 @@
                     `<div><span style="opacity:0.5;">MERGED:</span> <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none;">${p.title}</a></div>`
                 ).join('');
                 document.getElementById('stat-activity').innerHTML = activityHTML || '<span style="opacity:0.5;">WAITING FOR INPUT...</span>';
+
+                // Pending Consensus (NEW)
+                const pendingHTML = pending.map(p => `
+                    <div style="margin-bottom:1rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.2rem;">
+                            <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none; font-weight:bold;">${p.title}</a>
+                            <span style="color:var(--accent);">0/10 VOTES</span>
+                        </div>
+                        <div style="width:100%; height:4px; background:rgba(255,255,255,0.1);">
+                            <div style="width:0%; height:100%; background:var(--accent);"></div>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('stat-pending').innerHTML = pendingHTML || '<span style="opacity:0.5;">NO PENDING PROPOSALS</span>';
 
             } catch (e) {
                 console.log('GitHub API Limit', e);
@@ -664,6 +681,14 @@
                             <div id="stat-activity" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; font-family: 'Space Mono'; font-size: 0.75rem;">
                                 <span style="opacity:0.5;">CONNECTING TO HIVE...</span>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- NEW: PENDING CONSENSUS CARD (Wide) -->
+                    <div class="crypto-card" style="margin-top: 1rem; cursor: default;">
+                        <span class="crypto-label">PENDING CONSENSUS // VOTING QUEUE</span>
+                        <div id="stat-pending" style="font-family: 'Space Mono'; font-size: 0.8rem; margin-top: 1rem;">
+                            <span style="opacity:0.5;">SCANNING PRs...</span>
                         </div>
                     </div>
                 </section>
