@@ -557,36 +557,45 @@
                 const nodes = (repo.forks_count + repo.stargazers_count); 
                 document.getElementById('stat-nodes').innerText = nodes;
 
-                // Contributors
-                const contribHTML = contributors.map(c => 
-                    `<div><span style="color:var(--accent);">> ${c.login}</span> <span style="opacity:0.5;">(${c.contributions} commits)</span></div>`
-                ).join('');
-                document.getElementById('stat-contributors').innerHTML = contribHTML;
+                // Contributors - Robust Check
+                if (Array.isArray(contributors)) {
+                    const contribHTML = contributors.map(c => 
+                        `<div><span style="color:var(--accent);">> ${c.login}</span> <span style="opacity:0.5;">(${c.contributions} commits)</span></div>`
+                    ).join('');
+                    document.getElementById('stat-contributors').innerHTML = contribHTML;
+                } else {
+                    document.getElementById('stat-contributors').innerHTML = '<span style="opacity:0.5; color:red;">API LIMIT / ERROR</span>';
+                }
 
-                // Activity
-                const activityHTML = pulls.map(p => 
-                    `<div><span style="opacity:0.5;">MERGED:</span> <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none;">${p.title}</a></div>`
-                ).join('');
-                document.getElementById('stat-activity').innerHTML = activityHTML || '<span style="opacity:0.5;">WAITING FOR INPUT...</span>';
+                // Activity - Robust Check
+                if (Array.isArray(pulls)) {
+                    const activityHTML = pulls.map(p => 
+                        `<div><span style="opacity:0.5;">MERGED:</span> <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none;">${p.title}</a></div>`
+                    ).join('');
+                    document.getElementById('stat-activity').innerHTML = activityHTML || '<span style="opacity:0.5;">WAITING FOR INPUT...</span>';
+                }
 
-                // Pending Consensus (NEW) - Sort by reaction count logic requires extra calls, sticking to basic list for now as API limit is tight
-                // To do proper sorting, we would need to fetch reactions for each PR. For MVP, we list them.
-                const pendingHTML = pending.length > 0 ? pending.map(p => `
-                    <div style="margin-bottom:0.8rem;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:0.2rem;">
-                            <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none; font-weight:bold; font-size:0.8rem;">${p.title}</a>
+                // Pending Consensus (NEW)
+                if (Array.isArray(pending)) {
+                    const pendingHTML = pending.length > 0 ? pending.map(p => `
+                        <div style="margin-bottom:0.8rem;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:0.2rem;">
+                                <a href="${p.html_url}" target="_blank" style="color:white; text-decoration:none; font-weight:bold; font-size:0.8rem;">${p.title}</a>
+                            </div>
+                            <div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px;">
+                                <div style="width:20%; height:100%; background:var(--accent); border-radius:2px; box-shadow: 0 0 5px var(--accent);"></div>
+                            </div>
+                            <div style="text-align:right; font-size:0.6rem; color:var(--accent); margin-top:2px;">WAITING FOR VOTES...</div>
                         </div>
-                        <div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px;">
-                            <div style="width:20%; height:100%; background:var(--accent); border-radius:2px; box-shadow: 0 0 5px var(--accent);"></div>
-                        </div>
-                        <div style="text-align:right; font-size:0.6rem; color:var(--accent); margin-top:2px;">WAITING FOR VOTES...</div>
-                    </div>
-                `).join('') : '<span style="opacity:0.5; font-size:0.8rem;">NO PENDING PROPOSALS // SWARM IDLE</span>';
-                
-                document.getElementById('stat-pending').innerHTML = pendingHTML;
+                    `).join('') : '<span style="opacity:0.5; font-size:0.8rem;">NO PENDING PROPOSALS // SWARM IDLE</span>';
+                    
+                    document.getElementById('stat-pending').innerHTML = pendingHTML;
+                }
 
             } catch (e) {
                 console.log('GitHub API Limit', e);
+                // Fallback UI
+                document.getElementById('stat-contributors').innerHTML = '<span style="opacity:0.5;">OFFLINE MODE</span>';
             }
         }
         
@@ -601,6 +610,8 @@
                 const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/pulls?state=open&per_page=50');
                 const prs = await response.json();
                 
+                if (!Array.isArray(prs)) throw new Error("API Limit Reached");
+
                 let listHTML = '';
                 
                 if (prs.length === 0) {
@@ -857,6 +868,8 @@
                 const response = await fetch('https://api.github.com/repos/WikPlus/Claw-wiki/contributors?per_page=100');
                 const contributors = await response.json();
                 
+                if (!Array.isArray(contributors)) throw new Error("API Limit Reached");
+
                 let listHTML = contributors.map((c, index) => `
                     <div class="knowledge-row" onclick="window.open('${c.html_url}', '_blank')">
                         <div class="row-main" style="display: flex; align-items: center; gap: 1rem;">
