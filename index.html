@@ -304,7 +304,7 @@
         /* SCROLL MARGIN FIX (UPDATED TO 180px) */
         .knowledge-section { 
             margin-top: 5rem;
-            scroll-margin-top: 180px; 
+            scroll-margin-top: 250px; 
         }
         
         .section-title {
@@ -384,9 +384,9 @@
         }
         .crypto-card:active { transform: scale(0.98); }
 
-        /* Footer - EXTRA PADDING AT BOTTOM */
+        /* Footer - FIXED OPACITY - PADDING REDUCED */
         footer { 
-            padding: 5rem 5% 15rem 330px; /* Increased bottom padding to 15rem */
+            padding: 5rem 5% 5rem 330px; /* Reduced padding-bottom to 5rem */
             text-align: center; 
             border-top: 1px solid var(--border); 
             font-family: var(--font-display); 
@@ -414,7 +414,7 @@
         @media (max-width: 1000px) {
             aside { display: none; }
             main { margin-left: 0; padding-left: 0; }
-            footer { padding-left: 5%; padding-bottom: 10rem; }
+            footer { padding-left: 5%; }
             .search-input-box { width: 150px; }
         }
     </style>
@@ -477,7 +477,6 @@
                     <span class="crypto-label">BTC // BITCOIN</span>
                     <span class="crypto-address">bc1q40sfuzxewl27dkhyc4j7xel9ta78zs7fnma5gd</span>
                 </div>
-                <!-- ETH REMOVED -->
                 
                 <!-- SOL -->
                 <div class="crypto-card" onclick="copyToClip('EyfhS4fbEgXJUhPWob36jLnWDxrhveockW9Rkji5VnZP', this)">
